@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
 import datetime
 import pickle
 import os.path
@@ -7,12 +6,18 @@ import openpyxl
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import configparser
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
 
 def main():
+    # コンフィグファイル読み込み
+    config_ini = configparser.ConfigParser()
+    config_ini.read('config.ini', encoding='utf-8')
+    calendar_id = config_ini['DEFAULT']['calendar_id']
+
     creds = None
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
@@ -30,8 +35,9 @@ def main():
     service = build('calendar', 'v3', credentials=creds)
 
     # Call the Calendar API
+    # TODO maxResultsの上限 startとendの設定 
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    events_result = service.events().list(calendarId='au0nsb6vshtsban2ueb3ttbfao@group.calendar.google.com', timeMin=now,
+    events_result = service.events().list(calendarId=calendar_id, timeMin=now,
                                         maxResults=10, singleEvents=True,).execute()
     events = events_result.get('items', [])
 
