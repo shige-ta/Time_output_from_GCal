@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 from __future__ import print_function
 import datetime
 import pickle
 import os.path
+import openpyxl
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -11,17 +13,10 @@ SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
 
 def main():
-    """Shows basic usage of the Google Calendar API.
-    Prints the start and name of the next 10 events on the user's calendar.
-    """
     creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
             creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -29,7 +24,6 @@ def main():
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
-        # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
 
@@ -37,18 +31,23 @@ def main():
 
     # Call the Calendar API
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    events_result = service.events().list(calendarId='', timeMin=now,
-                                        maxResults=10, singleEvents=True,
-                                        orderBy='startTime').execute()
+    events_result = service.events().list(calendarId='au0nsb6vshtsban2ueb3ttbfao@group.calendar.google.com', timeMin=now,
+                                        maxResults=10, singleEvents=True,).execute()
     events = events_result.get('items', [])
 
+    #エクセル書き込み
     if not events:
-        print('No upcoming events found.')
-    for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
+        print('イベントゼロ.')
+        return
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    for i, event in enumerate(events):
+        schedule_start = event['start'].get('dateTime', event['start'].get('date'))
+        schedule_end = event['end'].get('dateTime', event['end'].get('date'))
+        ws['A' + str(i+1)].value = str(schedule_start)
+        ws['B' + str(i+1)].value = str(schedule_end)
 
+    wb.save('output.xlsx')
 
 if __name__ == '__main__':
     main()
