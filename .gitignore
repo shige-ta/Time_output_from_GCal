@@ -3,3 +3,4 @@ token.pickle
 *.xlsx
 config.ini
 名称未設定.code-workspace
+.DS_Store

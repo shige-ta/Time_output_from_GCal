@@ -15,13 +15,14 @@
 
 # Installation
 ```bash
-$ pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib openpyxl configparser
+git clone https://github.com/test-okome/Time_output_from_GCal.git
+cd Time_output_from_GCal
+docker-compose up -d --build
+docker-compose exec python3 bash
 ```
 
 # Usage
 ```bash
-git clone https://github.com/test-okome/Time_output_from_GCal.git
-cd Time_output_from_GCal
 python get_gcal_info.py
 ```
 
