@@ -4,7 +4,7 @@ services:
     restart: always
     build: .
     container_name: 'python3'
-    working_dir: '/var/opt/'
+    working_dir: '/var/app/'
     tty: true
     volumes:
-      - ./opt/:/var/opt/
+      - ./opt/:/var/app/
