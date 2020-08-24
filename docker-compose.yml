@@ -8,3 +8,4 @@ services:
     tty: true
     volumes:
       - ./opt/:/var/app/
+

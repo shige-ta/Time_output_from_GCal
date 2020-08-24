@@ -24,7 +24,7 @@ docker-compose exec python3 bash
 
 # Usage
 ```bash
-python get_gcal_info.py
+python get_gcal_info.py --noauth_local_webserver
 ```
 
 
