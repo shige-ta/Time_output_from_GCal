@@ -16,7 +16,6 @@
 # Installation
 ```bash
 git clone https://github.com/test-okome/Time_output_from_GCal.git
-git checkout sub
 cd Time_output_from_GCal
 docker-compose up -d --build
 docker-compose exec python3 bash
