@@ -1,37 +1,42 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+# Copyright 2014 Google Inc. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Simple command-line sample for the Calendar API.
+Command-line application that retrieves the list of the user's calendars."""
+
+import sys
 import datetime
-import pickle
 import os.path
 import openpyxl
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
 import configparser
+from oauth2client import client
+from googleapiclient import sample_tools
 
-# If modifying these scopes, delete the file token.pickle.
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-def main():
+def main(argv):
     # コンフィグファイル読み込み
     config_ini = configparser.ConfigParser()
     config_ini.read('config.ini', encoding='utf-8')
     calendar_id = config_ini['DEFAULT']['calendar_id']
 
-    creds = None
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
-
-    service = build('calendar', 'v3', credentials=creds)
+    # Authenticate and construct service.
+    service, flags = sample_tools.init(
+        argv, 'calendar', 'v3', __doc__, __file__,
+        scope='https://www.googleapis.com/auth/calendar.readonly')
 
     # Call the Calendar API
     # TODO maxResultsの上限 startとendの設定 
@@ -53,6 +58,5 @@ def main():
         ws['B' + str(i+1)].value = str(schedule_end)
 
     wb.save('output.xlsx')
-
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
