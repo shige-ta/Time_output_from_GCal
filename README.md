@@ -18,7 +18,7 @@
 git clone https://github.com/test-okome/Time_output_from_GCal.git
 cd Time_output_from_GCal
 docker-compose up -d --build
-docker-compose exec python3 bash
+docker-compose exec python3 sh
 ```
 ```bash
 vi /opt/config.ini
