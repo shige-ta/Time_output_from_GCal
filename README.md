@@ -20,15 +20,26 @@ cd Time_output_from_GCal
 docker-compose up -d --build
 docker-compose exec python3 bash
 ```
+```bash
+vi /opt/config.ini
+```
+
+```bash
+[DEFAULT]
+calendar_id = xxxxxxxxxxxxxxxx@group.calendar.google.com
+```
+
+GCPの新しいプロジェクトを作成し、OAuth 2.0 クライアント ID作成。認証キー(json)をダウンロード
+```bash
+/opt/client_secrets.json
+```
 
 # Usage
 ```bash
 python get_gcal_info.py --noauth_local_webserver
 ```
 
-
 # Note
-
 
 # Author
 * プロジェクト名　production_team
